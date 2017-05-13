@@ -32,6 +32,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static android.R.attr.data;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference dref;
     ArrayList<String> rateList = new ArrayList<String>();
     int flag =0;
+    HashMap hm;
 
 
 
@@ -60,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         get_place=(TextView)findViewById(R.id.textview);
         rateButton = (Button)findViewById(R.id.rateButton);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+
 
         searchButton=(Button)findViewById(R.id.search_button);
         final MainActivity myActivity = this;
@@ -90,10 +96,6 @@ public class MainActivity extends AppCompatActivity {
                 String address = String.format("Place: %s", place.getAddress());
                 queriedLocation = place.getId();
                 Log.v("PlaceId is", "" + queriedLocation);
-//                Log.v("Latitude is", "" + queriedLocation.latitude);
-//                Log.v("Longitude is", "" + queriedLocation.longitude);
-
-
                 get_place.setText(address);
             }
         }
@@ -103,20 +105,14 @@ public class MainActivity extends AppCompatActivity {
                     String address = String.format("Place: %s", place.getAddress());
                     queriedLocation = place.getId();
                     Log.v("Place Id is", "" + queriedLocation);
-//                Log.v("Latitude is", "" + queriedLocation.latitude);
-//                Log.v("Longitude is", "" + queriedLocation.longitude);
-
-
                     fetchrate();
+                    flag=0;
                 }
 
         }
     }
 
     public void fetchrate(){
-
-        //dref = FirebaseDatabase.getInstance().getReference().child(queriedLocation);
-        //Get datasnapshot at your "users" root node
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(queriedLocation);
         ref.addValueEventListener(
                 new ValueEventListener() {
@@ -125,16 +121,34 @@ public class MainActivity extends AppCompatActivity {
                         //Get map of
                         // in datasnapshot
                         Double sum = 0.0;
-                        Double avg;
+                        Double avg=0.0;
+
                         //collectPhoneNumbers((Map<String,Object>) dataSnapshot.getValue());
                         for (DataSnapshot item : dataSnapshot.getChildren()) {
                             Log.d("Snapshot:", item.getValue().toString());
                             rateList.add(item.getValue().toString());
+
+
                         }
+                        for(String r : rateList){
+
+                            Pattern p = Pattern.compile("[+-]?(([1-9][0-9]*)|(0))([.,][0-9]+)?");
+                            Matcher m = p.matcher(r);
+                            if(m.find())System.out.println(m.group(0));
+                            sum+=Double.parseDouble(m.group(0));
+                        }
+                        avg = sum/rateList.size();
                         Log.i("Ratings are : ", rateList.toString());
-                       // Log.i("Values are " , rateList.toString());
-                        //avg = sum/rateList.size();
-                        //Log.i("Avg rating is : " , avg.toString());
+                        Log.i("Sum is : ",sum.toString() );
+                        Log.i("Average is : ",avg.toString() );
+                        if(avg==0.0)
+                            Toast.makeText(getApplicationContext(), "Not yet rated",
+                                    Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(getApplicationContext(), "Safety rating : " + avg.toString(),
+                                    Toast.LENGTH_LONG).show();
+                        avg = 0.0;
+                        sum =0.0;
                     }
 
                     @Override
@@ -144,37 +158,18 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void collectPhoneNumbers(Map<String,Object> users) {
 
-        ArrayList<Long> phoneNumbers = new ArrayList<>();
-
-        //iterate through each user, ignoring their UID
-        for (Map.Entry<String, Object> entry : users.entrySet()){
-
-            //Get user map
-            Map singleUser = (Map) entry.getValue();
-            //Get phone field and append to list
-            phoneNumbers.add((Long) singleUser.get(queriedLocation));
-        }
-
-        System.out.println(phoneNumbers.toString());
-    }
 
 
 
 
    public void doneRating(View view){
        rating=ratingBar.getRating();
-
-
-
        Log.i("Longitude is", "" + queriedLocation);
        DatabaseReference myref = fb.getReference(queriedLocation);
        myref = myref.push();
-       //myref.chi
        myref.child("Rating").setValue(rating);
        Toast.makeText(this, "Thanks for Rating "+rating, Toast.LENGTH_LONG).show();
-//       rateList=null;
        ArrayList<Float> rateList=new ArrayList<>();
 
 
