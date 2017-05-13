@@ -67,6 +67,7 @@
         android:layout_marginBottom="10dp"
         android:text="Select a place"
         android:textSize="10sp"
+        android:onClick="getRating"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
