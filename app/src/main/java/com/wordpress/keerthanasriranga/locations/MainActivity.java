@@ -16,6 +16,8 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,8 +38,9 @@ public class MainActivity extends AppCompatActivity {
     float rating;
     RatingBar ratingBar;
     HashMap<LatLng,ArrayList<Float>> RateMap;
-    LatLng queriedLocation;
+    String queriedLocation;
     Button searchButton;
+    FirebaseDatabase fb;
 
 
 
@@ -53,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         RateMap = new HashMap<>();
         searchButton=(Button)findViewById(R.id.search_button);
         final MainActivity myActivity = this;
+
+        fb = FirebaseDatabase.getInstance();
 
         get_place.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
                 String address = String.format("Place: %s", place.getAddress());
-                queriedLocation = place.getLatLng();
+                queriedLocation = place.getId();
                 Log.v("Latlong is", "" + queriedLocation);
 //                Log.v("Latitude is", "" + queriedLocation.latitude);
 //                Log.v("Longitude is", "" + queriedLocation.longitude);
@@ -90,22 +95,19 @@ public class MainActivity extends AppCompatActivity {
 
    public void doneRating(View view){
        rating=ratingBar.getRating();
+
+
+
+       Log.i("Longitude is", "" + queriedLocation);
+       DatabaseReference myref = fb.getReference(queriedLocation);
+       myref = myref.push();
+       //myref.chi
+       myref.child("Rating").setValue(rating);
        Toast.makeText(this, "Thanks for Rating "+rating, Toast.LENGTH_LONG).show();
 //       rateList=null;
        ArrayList<Float> rateList=new ArrayList<>();
 
-       if(RateMap.containsKey(queriedLocation))
-       {
-           rateList=  RateMap.get(queriedLocation);
-           rateList.add(rating);
-           RateMap.put(queriedLocation,rateList);
-           Log.v("ArrayList", "" +RateMap.get(queriedLocation) );
-       }
-       else {
-           rateList.add(rating);
-           RateMap.put(queriedLocation, rateList);
-           System.out.println(RateMap);
-       }
+
    }
 
 }
