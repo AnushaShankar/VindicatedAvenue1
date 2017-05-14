@@ -2,6 +2,7 @@ package com.wordpress.keerthanasriranga.locations;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,9 +48,11 @@ public class MainActivity extends AppCompatActivity {
     RatingBar ratingBar;
     HashMap<LatLng,ArrayList<Float>> RateMap;
     String queriedLocation;
+    String queriedname;
     Button searchButton;
     FirebaseDatabase fb;
     DatabaseReference dref;
+    LatLng loclatlng;
     ArrayList<String> rateList = new ArrayList<String>();
     int flag =0;
     HashMap hm;
@@ -95,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 Place place = PlacePicker.getPlace(data, this);
                 String address = String.format("Place: %s", place.getAddress());
                 queriedLocation = place.getId();
+                queriedname = place.getName().toString();
+                loclatlng = place.getLatLng();
                 Log.v("PlaceId is", "" + queriedLocation);
                 get_place.setText(address);
             }
@@ -104,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     Place place = PlacePicker.getPlace(data, this);
                     String address = String.format("Place: %s", place.getAddress());
                     queriedLocation = place.getId();
+                    loclatlng = place.getLatLng();
                     Log.v("Place Id is", "" + queriedLocation);
                     fetchrate();
                     flag=0;
@@ -188,6 +194,25 @@ public class MainActivity extends AppCompatActivity {
        } catch (GooglePlayServicesNotAvailableException e) {
            e.printStackTrace();
        }
+   }
+   public void navigate(View view){
+       Double lat = loclatlng.latitude;
+       Double lang = loclatlng.longitude;
+       Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lang + "+to:" +lat+10 + "," + lang+ "+to:" +lat+20 + "," + lang);
+       Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+       mapIntent.setPackage("com.google.android.apps.maps");
+       startActivity(mapIntent);
+
+
+   }
+   public void getStreetView(View view){
+       Double lat = loclatlng.latitude;
+       Double lang = loclatlng.longitude;
+       Uri gmmIntentUr = Uri.parse("google.streetview:cbll="+lat.toString()+","+lang.toString());
+       Intent mapInten = new Intent(Intent.ACTION_VIEW, gmmIntentUr);
+       mapInten.setPackage("com.google.android.apps.maps");
+       startActivity(mapInten);
+
    }
 
 }
