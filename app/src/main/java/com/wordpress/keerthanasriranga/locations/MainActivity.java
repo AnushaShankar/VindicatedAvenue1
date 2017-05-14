@@ -198,7 +198,11 @@ public class MainActivity extends AppCompatActivity {
    public void navigate(View view){
        Double lat = loclatlng.latitude;
        Double lang = loclatlng.longitude;
-       Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lang + "+to:" +lat+10 + "," + lang+ "+to:" +lat+20 + "," + lang);
+       Double lat1 = lat+1;
+       Double lang1 = lang+1;
+       Double lat2 = lat+2;
+       Double lang2 = lang+2;
+       Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lang + "+to:" +lat1 + "," + lang1+ "+to:" +lat2 + "," + lang2);
        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
        mapIntent.setPackage("com.google.android.apps.maps");
        startActivity(mapIntent);
