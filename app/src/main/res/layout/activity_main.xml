@@ -33,19 +33,6 @@
         android:layout_marginBottom="21dp" />
 
     <Button
-        android:id="@+id/rateButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ratingBar"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/cast_expanded_controller_actionbar_bg_gradient_light"
-        android:backgroundTint="@color/colorAccent"
-        android:onClick="doneRating"
-        android:text="Submit"
-        android:textColor="@android:color/white"
-        android:textSize="15dp" />
-
-    <Button
         android:id="@+id/search_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -129,6 +116,28 @@
             android:textSize="20dp"
             tools:textColor="#ffffff" />
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/rateComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ratingBar"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:inputType="textMultiLine" />
+
+    <Button
+        android:id="@+id/rateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/cast_expanded_controller_actionbar_bg_gradient_light"
+        android:backgroundTint="@color/colorAccent"
+        android:onClick="doneRating"
+        android:text="Submit"
+        android:textColor="@android:color/white"
+        android:textSize="15dp"
+        android:layout_above="@+id/textView"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

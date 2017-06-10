@@ -17,6 +17,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> rateList = new ArrayList<String>();
     int flag =0;
     HashMap hm;
+    TextView RateComment;
+    String comment;
 
 
 
@@ -68,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         get_place=(TextView)findViewById(R.id.textview);
         rateButton = (Button)findViewById(R.id.rateButton);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+         RateComment = (TextView)findViewById(R.id.rateComment);
 
 
         searchButton=(Button)findViewById(R.id.search_button);
@@ -155,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.LENGTH_LONG).show();
                         avg = 0.0;
                         sum =0.0;
+                        
                     }
 
                     @Override
@@ -172,10 +177,15 @@ public class MainActivity extends AppCompatActivity {
    public void doneRating(View view){
        rating=ratingBar.getRating();
        Log.i("Longitude is", "" + queriedLocation);
+
+           comment = RateComment.getText().toString();
+
        DatabaseReference myref = fb.getReference(queriedLocation);
        myref = myref.push();
        myref.child("Rating").setValue(rating);
+       myref.child("Comment").setValue(comment);
        Toast.makeText(this, "Thanks for Rating "+rating, Toast.LENGTH_LONG).show();
+       RateComment.setText(" ");
        ArrayList<Float> rateList=new ArrayList<>();
 
 
@@ -198,10 +208,10 @@ public class MainActivity extends AppCompatActivity {
    public void navigate(View view){
        Double lat = loclatlng.latitude;
        Double lang = loclatlng.longitude;
-       Double lat1 = lat+1;
-       Double lang1 = lang+1;
-       Double lat2 = lat+2;
-       Double lang2 = lang+2;
+       Double lat1 = lat+0.1;
+       Double lang1 = lang+0.1;
+       Double lat2 = lat+0.2;
+       Double lang2 = lang+0.2;
        Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lang + "+to:" +lat1 + "," + lang1+ "+to:" +lat2 + "," + lang2);
        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
        mapIntent.setPackage("com.google.android.apps.maps");
@@ -220,3 +230,4 @@ public class MainActivity extends AppCompatActivity {
    }
 
 }
+
