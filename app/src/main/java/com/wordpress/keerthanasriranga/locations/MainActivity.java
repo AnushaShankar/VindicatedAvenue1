@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.LENGTH_LONG).show();
                         avg = 0.0;
                         sum =0.0;
-                        
+
                     }
 
                     @Override
